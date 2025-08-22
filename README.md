@@ -1,6 +1,27 @@
 # Team Tasks
 
-Minimal authenticated app with Supabase Auth and RLS-protected tasks.
+A minimal authenticated task management app built with Next.js, Supabase, Docker, Terraform, and GitHub Actions.
+
+## Architecture Diagram
+
+```
+[User] -> [Next.js App (Docker)] -> [Supabase (Auth + DB)]
+                        |
+                [Deployed via CI/CD]
+                        |
+                [Provisioned VM (Terraform)]
+```
+
+## Setup
+- Supabase: configure with schema and RLS in `supabase/schema.sql`.
+- Env vars: set in `.env.local` (see example in README).
+- Local: `npm install`, `npm run dev`.
+- Docker: `docker build .`, `docker run ...`.
+- Terraform: see `infra/terraform/`.
+- CI/CD: see `.github/workflows/deploy.yml`.
+
+## Trade-offs & Next Steps
+- See comments in code and this file.
 
 ## Database
 

@@ -1,0 +1,2 @@
+-- Tasks table and RLS policies
+-- Add your table and RLS SQL here
