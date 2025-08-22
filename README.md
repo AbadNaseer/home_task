@@ -1,3 +1,28 @@
+# Team Tasks
+
+Minimal authenticated app with Supabase Auth and RLS-protected tasks.
+
+## Database
+
+Two SQL files will help you set up and seed your database:
+
+- `sql/001_schema_and_policies.sql`: Creates `tasks` table and RLS policies
+- `sql/002_seed.sql`: Inserts sample tasks
+
+Run them in Supabase SQL editor or via CLI in order.
+
+## Auth
+
+- Email + password sign in
+- Magic link (email OTP) sign-in supported
+- Confirm route is `/auth/confirm`
+
+## Pages
+
+- `/login`: Login form and magic link
+- `/register`: Create account
+- `/tasks`: CRUD UI for personal tasks
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
