@@ -19,12 +19,40 @@ A production-ready authenticated task management app built with Next.js, Supabas
 ## Architecture
 
 ```
-[User] -> [Next.js App (Docker)] -> [Supabase (Auth + DB)]
-                        |
-                [Deployed on AWS EC2]
-                        |
-                [VPC + Security Groups (Terraform)]
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│     GitHub      │    │   GitHub        │    │   Supabase      │
+│   Repository    │───▶│   Actions       │    │   Database      │
+│                 │    │   (CI/CD)       │    │   + Auth        │
+└─────────────────┘    └─────────┬───────┘    └─────────────────┘
+                                 │                       ▲
+                                 │                       │
+                                 ▼                       │
+                    ┌─────────────────┐                  │
+                    │   Docker Build  │                  │
+                    │   + GHCR Push   │                  │
+                    └─────────┬───────┘                  │
+                              │                          │
+                              ▼                          │
+┌─────────────────┐    ┌─────────────────┐              │
+│     User        │    │   AWS EC2       │              │
+│   (Browser)     │───▶│   + Docker      │──────────────┘
+│                 │    │   + Next.js     │
+└─────────────────┘    └─────────────────┘
+                              │
+                              ▼
+                    ┌─────────────────┐
+                    │   AWS VPC       │
+                    │ + Security      │
+                    │ + Networking    │
+                    └─────────────────┘
 ```
+
+**Flow:**
+1. **Developer** pushes code to GitHub
+2. **GitHub Actions** builds Docker image → pushes to GHCR
+3. **CI/CD** SSHs into EC2 → pulls latest image → restarts container
+4. **Next.js app** serves users → authenticates via Supabase
+5. **AWS infrastructure** provides secure, scalable hosting
 
 ## Features
 
@@ -67,6 +95,7 @@ npm run dev
 - AWS CLI configured with admin access
 - Terraform installed
 - Docker installed
+- GitHub account with repository
 
 ### Infrastructure Setup
 
@@ -89,17 +118,89 @@ npm run dev
    - SSH connection command
    - Application URL
 
-### Application Deployment
+### CI/CD Setup
+
+#### 1. GitHub Secrets Configuration
+Set up the following secrets in your GitHub repository (`Settings > Secrets and variables > Actions`):
+
+| Secret Name | Description | Example |
+|-------------|-------------|---------|
+| `SUPABASE_URL` | Your Supabase project URL | `https://abc123.supabase.co` |
+| `SUPABASE_ANON_KEY` | Your Supabase anonymous key | `eyJhbGciOiJIUzI1NiIs...` |
+| `VM_HOST` | Your AWS EC2 public IP | `13.200.158.181` |
+| `VM_USER` | SSH username for EC2 | `ubuntu` |
+| `VM_SSH_KEY` | Private SSH key content | Content of `team-tasks-key.pem` |
+| `VM_SSH_PORT` | SSH port (optional) | `22` |
+
+#### 2. Automated Setup (Optional)
+```bash
+# Install GitHub CLI if not already installed
+# Then run the setup helper:
+chmod +x scripts/setup-secrets.sh
+./scripts/setup-secrets.sh
+```
+
+#### 3. Workflow Overview
+
+**On Pull Request to main:**
+- ✅ Validates code with linting and type checking
+- ✅ Tests `pnpm install` and `pnpm dev` works
+- ✅ Builds and tests Docker image
+- ✅ Runs `docker run` and health checks
+- ✅ Security scanning
+
+**On Push to main:**
+- 🚀 Builds and pushes Docker image to GitHub Container Registry
+- 🚀 SSH into EC2 and deploys with zero-downtime
+- 🚀 Health checks and rollback on failure
+
+### Manual Deployment (Alternative)
+
+If you prefer manual deployment without GitHub Actions:
 
 1. **Connect to your server:**
    ```bash
    ssh -i ./team-tasks-key.pem ubuntu@YOUR_PUBLIC_IP
    ```
 
-2. **Deploy your application:**
-   - Transfer your code to the server
-   - Build and run Docker containers
-   - Configure environment variables
+2. **Clone and deploy:**
+   ```bash
+   # On the server
+   git clone https://github.com/yourusername/team_tasks.git
+   cd team_tasks
+   
+   # Create .env.local with your Supabase credentials
+   cp .env.example .env.local
+   # Edit .env.local
+   
+   # Build and run with Docker
+   docker build -t team-tasks .
+   docker run -d \
+     --name team-tasks \
+     --restart unless-stopped \
+     -p 3000:3000 \
+     --env-file .env.local \
+     team-tasks
+   ```
+
+### Verification Checklist
+
+✅ **Local Development:**
+```bash
+pnpm install && pnpm dev  # Should start dev server
+curl http://localhost:3000/api/healthz  # Should return healthy
+```
+
+✅ **Docker:**
+```bash
+docker build . && docker run -p 3000:3000 <image>
+curl http://localhost:3000/api/healthz  # Should return healthy
+```
+
+✅ **Production:**
+```bash
+curl http://YOUR_PUBLIC_IP:3000/api/healthz  # Should return healthy
+```
 
 ## Security Features
 
