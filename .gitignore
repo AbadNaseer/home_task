@@ -1,35 +1,5 @@
-# Node modules
+# Dependencies
 node_modules/
-
-# Environment variables
-.env
-.env.*
-
-# Log files
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Next.js build output
-.next/
-out/
-
-# OS files
-*.DS_Store
-Thumbs.db
-
-# Docker
-docker-compose.override.yml
-.docker/
-
-# VSCode
-.vscode/
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
 /.pnp
 .pnp.*
 .yarn/*
@@ -38,32 +8,73 @@ docker-compose.override.yml
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
+# Environment variables (NEVER commit these)
+.env*
+!.env.example
 
-# next.js
+# Next.js
 /.next/
 /out/
+*.tsbuildinfo
+next-env.d.ts
 
-# production
+# Production
 /build
 
-# misc
-.DS_Store
-*.pem
+# Testing
+/coverage
 
-# debug
+# Log files
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
 
-# vercel
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+
+# Terraform sensitive files (NEVER commit these)
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+terraform.tfplan
+crash.log
+crash.*.log
+
+# SSH keys and certificates (NEVER commit these)
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# AWS and cloud provider configs (NEVER commit these)
+.aws/
+terraform-policy.json
+
+# Local development files
+.local/
+temp/
+tmp/
+
+# Vercel
 .vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts

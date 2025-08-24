@@ -13,42 +13,7 @@
      the root module can show a convenient application URL.
 --------------------------------------------------------------------------- */
 
-variable "project_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "aws_region" {
-  type = string
-}
-
-variable "instance_type" {
-  type = string
-}
-
-variable "subnet_id" {
-  type = string
-}
-
-variable "security_group_ids" {
-  type = list(string)
-}
-
-variable "key_name" {
-  type = string
-}
-
-variable "root_block_device" {
-  type = map(any)
-  default = {
-    volume_type = "gp3"
-    volume_size = 20
-    encrypted   = true
-  }
-}
+/* Variables declared in variables.tf */
 
 # Fetch a recent Ubuntu 22.04 AMI from Canonical; using 'most_recent'
 # keeps the image current for learning but may change the AMI ID over time.
@@ -104,14 +69,4 @@ resource "aws_eip" "main" {
   depends_on = [aws_instance.main]
 }
 
-output "instance_id" {
-  value = aws_instance.main.id
-}
-
-output "instance_public_ip" {
-  value = aws_eip.main.public_ip
-}
-
-output "instance_public_dns" {
-  value = aws_eip.main.public_dns
-}
+/* Outputs declared in outputs.tf */

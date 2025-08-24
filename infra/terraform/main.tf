@@ -81,8 +81,4 @@ module "compute" {
   root_block_device  = var.root_block_device
 }
 
-output "private_key_path" {
-  description = "Path to the private key file"
-  value       = local_file.private_key.filename
-  sensitive   = true
-}
+/* private_key_path output moved to outputs.tf */

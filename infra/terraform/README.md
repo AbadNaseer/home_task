@@ -13,15 +13,18 @@ Layout
 - `modules/compute` - EC2 instance + Elastic IP.
 
 Quick start (learning)
-1. Configure AWS credentials: `aws configure`
-2. Create a safe tfvars file that restricts SSH to your IP:
-   - Get your IP: `(Invoke-RestMethod -Uri 'https://ipinfo.io/ip').Trim()`
-   - Write `terraform.tfvars` with: `allowed_ssh_cidrs = ["YOUR_IP/32"]`
-3. Initialize and plan:
-   - `terraform init`
-   - `terraform plan -var-file=terraform.tfvars`
-4. Apply when ready:
-   - `terraform apply -var-file=terraform.tfvars`
+Quick start (learning)
+1. Configure AWS credentials: `aws configure` or export env vars.
+2. Copy `terraform.tfvars.example` -> `terraform.tfvars` and replace YOUR_IP with your public IP (or let the helper script create it):
+   - Example: `cp terraform.tfvars.example terraform.tfvars` then edit the file.
+3. Use the helper script to detect your IP, init, plan and optionally apply:
+   - `.\	erraform\deploy.ps1` (runs interactively)
+   - `.\terraform\deploy.ps1 -ProfileName teamtasks -AutoApprove` (non-interactive)
+
+Manual alternative (without the helper):
+ - `terraform init`
+ - `terraform plan -var-file=terraform.tfvars`
+ - `terraform apply -var-file=terraform.tfvars`
 
 Cleanup
 - `terraform destroy -var-file=terraform.tfvars` (removes resources)
@@ -29,3 +32,12 @@ Cleanup
 Notes for learners
 - This project intentionally keeps secrets and a private key in the module
   folder for convenience. Do not commit private keys to git in real projects.
+
+IAM quick setup (if your Terraform user lacks EC2/VPC permissions)
+- If the `terraform-deployer` user is missing permissions (error mentions ec2:DescribeImages), you can create and attach a minimal policy.
+- Run as an admin:
+   - `cd infra/terraform/iam`
+   - `.
+      attach-policy.ps1 -ProfileName admin-profile -UserName terraform-deployer`
+   - This creates a `TerraformDeployerEC2VPCPolicy` and attaches it to the user.
+   - After that, re-run the deploy helper: `..\deploy.ps1 -ProfileName teamtasks`

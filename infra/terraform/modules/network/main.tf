@@ -16,33 +16,7 @@
    - This file contains only one security group to keep the example simple.
 --------------------------------------------------------------------------- */
 
-variable "project_name" {
-  type = string
-}
-
-variable "environment" {
-  type = string
-}
-
-variable "aws_region" {
-  type = string
-}
-
-variable "vpc_cidr" {
-  type    = string
-  default = "10.0.0.0/16"
-}
-
-variable "public_subnet_cidr" {
-  type    = string
-  default = "10.0.1.0/24"
-}
-
-variable "allowed_ssh_cidrs" {
-  description = "List of CIDR blocks allowed to SSH into instances (e.g. [\"203.0.113.5/32\"])"
-  type        = list(string)
-}
-
+/* Variables declared in variables.tf */
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -169,14 +143,4 @@ resource "aws_security_group" "main" {
   }
 }
 
-output "vpc_id" {
-  value = aws_vpc.main.id
-}
-
-output "public_subnet_id" {
-  value = aws_subnet.public.id
-}
-
-output "security_group_id" {
-  value = aws_security_group.main.id
-}
+/* Outputs declared in outputs.tf */

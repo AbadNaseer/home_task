@@ -4,6 +4,18 @@ variable "aws_region" {
   default     = "ap-south-1" # Asia Pacific (Mumbai) - good for Pakistan
 }
 
+variable "region" {
+  description = "AWS region (alias for aws_region)"
+  type        = string
+  default     = "ap-south-1"
+}
+
+variable "key_name" {
+  description = "Name for the SSH key pair"
+  type        = string
+  default     = "team-tasks-key"
+}
+
 variable "project_name" {
   description = "Name of the project"
   type        = string
