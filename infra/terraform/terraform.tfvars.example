@@ -1,0 +1,15 @@
+# Example Terraform variables
+# Copy this file to terraform.tfvars and fill in your actual values
+
+# AWS region where resources will be created
+region = "ap-south-1"
+
+# Your public IP address for SSH access (get from https://whatismyipaddress.com)
+# SECURITY: Replace 0.0.0.0/0 with your actual IP like "203.0.113.5/32"
+allowed_ssh_cidrs = ["YOUR_IP/32"]
+
+# EC2 instance type (t2.micro is free tier eligible)
+instance_type = "t2.micro"
+
+# Name for the SSH key pair that will be created
+key_name = "team-tasks-key"

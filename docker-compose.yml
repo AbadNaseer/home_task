@@ -1,1 +1,10 @@
 # Optional docker-compose for local dev
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    restart: unless-stopped
