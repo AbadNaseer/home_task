@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-    branches: [main, staging]
+    branches: [main]
   workflow_dispatch: # Manual trigger
 
 env:
@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # Validation job - runs on GitHub-hosted runners for consistency
+  # Validation job - runs on all triggers (PR, push, manual)
   validate:
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +47,7 @@ jobs:
           push: false
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:test
 
-  # Deployment job - runs on your self-hosted runner
+  # Deployment job - runs on self-hosted runner (only for main branch push or manual)
   deploy:
     runs-on: [self-hosted, linux, x64]
     needs: validate

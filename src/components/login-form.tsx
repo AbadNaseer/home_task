@@ -3,8 +3,7 @@
 import { login, sendMagicLink } from '@/actions/login'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState, useTransition } from 'react'
-import { toast } from 'sonner'
+import { useState, useTransition } from 'react'
 
 export default function LoginForm() {
     const searchParams = useSearchParams()
